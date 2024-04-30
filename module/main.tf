@@ -24,11 +24,11 @@ data "azurerm_windows_web_app" "windows_webapp" {
   resource_group_name     = data.azurerm_resource_group.apprg.name
 }
 
-data "azurerm_app_service_certificate" "ssl_certificate" {
+/*data "azurerm_app_service_certificate" "ssl_certificate" {
   name                = data.azurerm_windows_web_app.windows_webapp.https_only_binding.cert_name
   resource_group_name = data.azurerm_windows_web_app.windows_webapp.resource_group_name
   web_app_name        = data.azurerm_windows_web_app.windows_webapp.name
-}
+}*/
 
 resource "azurerm_monitor_action_group" "action" {
   name                = "DevActionGroup"
@@ -56,7 +56,7 @@ resource "azurerm_monitor_metric_alert" "cpu_alert" {
   }
 
   action {
-    action_group_id = azurerm_monitor_action_group.my_action_group.id
+    action_group_id = azurerm_monitor_action_group.action.id
   }
 }
 

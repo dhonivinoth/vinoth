@@ -42,25 +42,42 @@ resource "azurerm_monitor_action_group" "action" {
 
 # CPU Usage Alert
 resource "azurerm_monitor_metric_alert" "cpu_alert" {
-  name                = "CPUUsageAlert"
+  name                = "cpu-percentage-alert"
   resource_group_name = data.azurerm_resource_group.apprg.name
   scopes              = [data.azurerm_windows_web_app.windows_webapp.id]
-  description         = "Alert when CPU usage exceeds 80%"
-  target_resource_type = "Microsoft.Web/sites"
-  severity            = 1
-  
+  description         = "Alert when CPU exceeds 80%"
+
   criteria {
     metric_namespace = "Microsoft.Web/sites"
-    metric_name      = "CPU percentage"
+    metric_name      = "CpuPercentage"
     aggregation      = "Average"
     operator         = "GreaterThan"
     threshold        = 80
   }
 
   action {
-    action_group_id = azurerm_monitor_action_group.action.id
+    action_group_id = azurerm_monitor_action_group.my_action_group.id
   }
 }
+
+/*resource "azurerm_monitor_metric_alert" "memory_alert" {
+  name                = "memory-percentage-alert"
+  resource_group_name = data.azurerm_resource_group.apprg.name
+  scopes              = [data.azurerm_windows_web_app.windows_webapp.id]
+  description         = "Alert when memory exceeds 90%"
+
+  criteria {
+    metric_namespace = "Microsoft.Web/sites"
+    metric_name      = "MemoryPercentage"
+    aggregation      = "Average"
+    operator         = "GreaterThan"
+    threshold        = 90
+  }
+
+  action {
+    action_group_id = azurerm_monitor_action_group.action.id
+  }
+}*/
 
 # Memory Usage Alert
 resource "azurerm_monitor_metric_alert" "memory_alert" {
@@ -107,24 +124,18 @@ resource "azurerm_monitor_metric_alert" "response_time_alert" {
 
 
 
-resource "azurerm_monitor_metric_alert" "ssl_certificate_expiry_alert" {
-  name                = "SSLCertificateExpiryAlert"
+resource "azurerm_monitor_metric_alert" "ssl_certificate_alert" {
+  name                = "ssl-certificate-expiration-alert"
   resource_group_name = data.azurerm_resource_group.apprg.name
   scopes              = [data.azurerm_windows_web_app.windows_webapp.id]
-  description         = "Alert when SSL certificate is expired"
-  target_resource_type = "Microsoft.Web/sites"
+  description         = "Alert when SSL certificate is about to expire"
 
   criteria {
-    metric_namespace = "Microsoft.Web/certificates"
-    metric_name      = "ExpirationDate"
-    aggregation      = "Minute"
-    operator         = "LessThan"
-    threshold        = "0"
-    dimension {
-      name     = "CertificateName"
-      operator = "Include"
-      values   = [data.azurerm_app_service_certificate.ssl_certificate.name]
-    }
+    metric_namespace = "Microsoft.Web/sites"
+    metric_name      = "Certificate Expiry Date"
+    aggregation      = "Maximum"  # Use maximum to check the latest expiration date
+    operator         = "LessThan"  # Trigger alert if expiration date is less than threshold
+    threshold        = 30  # Set the threshold (in days) before certificate expiration
   }
 
   action {

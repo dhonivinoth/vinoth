@@ -23,18 +23,18 @@ steps:
   displayName: 'Installing Terraform'
   inputs:
     terraformVersion: 'latest'
-  
 - task: TerraformTaskV4@4
   displayName: 'terraform init'
   inputs:
     provider: 'azurerm'
     command: 'init'
     workingDirectory: '$(System.DefaultWorkingDirectory)/deployment'
-    backendServiceArm: 'devtest'
+    backendServiceArm: 'Free Trial(c88aba11-9acc-421a-af0b-f3de2280694d)'
     backendAzureRmResourceGroupName: 'firstrg701'
     backendAzureRmStorageAccountName: 'firststg702'
     backendAzureRmContainerName: 'devopscontainer'
     backendAzureRmKey: 'alert.terraform.tfstate'
+
 - task: TerraformTaskV4@4
   displayName: 'terraform plan'
   inputs:
@@ -42,7 +42,7 @@ steps:
     command: 'plan'
     workingDirectory: '$(System.DefaultWorkingDirectory)/deployment'
     commandOptions: '-var-file="./webapp.tfvars"'
-    environmentServiceNameAzureRM: 'devtest'
+    environmentServiceNameAzureRM: 'Free Trial(c88aba11-9acc-421a-af0b-f3de2280694d)'
 - task: TerraformTaskV4@4
   displayName: 'terraform apply'
   inputs:
@@ -50,4 +50,4 @@ steps:
     command: 'apply'
     workingDirectory: '$(System.DefaultWorkingDirectory)/deployment'
     commandOptions: '-auto-approve -var-file="./webapp.tfvars"'
-    environmentServiceNameAzureRM: 'devtest'
+    environmentServiceNameAzureRM: 'Free Trial(c88aba11-9acc-421a-af0b-f3de2280694d)'

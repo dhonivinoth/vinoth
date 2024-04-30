@@ -101,7 +101,6 @@ resource "azurerm_monitor_metric_alert" "response_time_alert" {
 
 
 
-# Define custom metric alert in Azure Monitor for SSL certificate expiry
 resource "azurerm_monitor_metric_alert" "ssl_certificate_expiry_alert" {
   name                = "SSLCertificateExpiryAlert"
   resource_group_name = data.azurerm_resource_group.apprg.name
@@ -110,16 +109,15 @@ resource "azurerm_monitor_metric_alert" "ssl_certificate_expiry_alert" {
   target_resource_type = "Microsoft.Web/sites"
 
   criteria {
-    metric_namespace = "Microsoft.Web/sites"
-    metric_name      = "Certificate Expiration Date"   #"AppServiceHTTPSProtocol"
-    aggregation      = "Total"
-    operator         = "GreaterThan"
-    threshold        = 30 # Alert when the SSL certificate expiry is within 30 days
-
+    metric_namespace = "Microsoft.Web/certificates"
+    metric_name      = "ExpirationDate"
+    aggregation      = "Minute"
+    operator         = "LessThan"
+    threshold        = "0"
     dimension {
-      name     = "SslState"
+      name     = "CertificateName"
       operator = "Include"
-      values   = ["Expired"]
+      values   = [data.azurerm_windows_web_app.windows_webapp.site_config.0.linux_fx_version]
     }
   }
 

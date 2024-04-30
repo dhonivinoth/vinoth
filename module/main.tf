@@ -88,7 +88,7 @@ resource "azurerm_monitor_metric_alert" "response_time_alert" {
   
   criteria {
     metric_namespace = "Microsoft.Web/sites"
-    metric_name      = "ResponseTime"
+    metric_name      = "AverageResponseTime"
     aggregation      = "Average"
     operator         = "GreaterThan"
     threshold        = 500 # Example threshold in milliseconds
@@ -111,7 +111,7 @@ resource "azurerm_monitor_metric_alert" "ssl_certificate_expiry_alert" {
 
   criteria {
     metric_namespace = "Microsoft.Web/sites"
-    metric_name      = "ExpiredSslCertificatesCount"   #"AppServiceHTTPSProtocol"
+    metric_name      = "Certificate Expiration Date"   #"AppServiceHTTPSProtocol"
     aggregation      = "Total"
     operator         = "GreaterThan"
     threshold        = 30 # Alert when the SSL certificate expiry is within 30 days

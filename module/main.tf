@@ -24,6 +24,12 @@ data "azurerm_windows_web_app" "windows_webapp" {
   resource_group_name     = data.azurerm_resource_group.apprg.name
 }
 
+data "azurerm_app_service_certificate" "ssl_certificate" {
+  name                = data.azurerm_windows_web_app.windows_webapp.https_only_binding.cert_name
+  resource_group_name = data.azurerm_windows_web_app.windows_webapp.resource_group_name
+  web_app_name        = data.azurerm_windows_web_app.windows_webapp.name
+}
+
 resource "azurerm_monitor_action_group" "action" {
   name                = "DevActionGroup"
   resource_group_name = data.azurerm_resource_group.apprg.name
@@ -117,7 +123,7 @@ resource "azurerm_monitor_metric_alert" "ssl_certificate_expiry_alert" {
     dimension {
       name     = "CertificateName"
       operator = "Include"
-      values   = [data.azurerm_windows_web_app.windows_webapp.site_config.0.linux_fx_version]
+      values   = [data.azurerm_app_service_certificate.ssl_certificate.name]
     }
   }
 

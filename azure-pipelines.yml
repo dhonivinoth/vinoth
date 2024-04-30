@@ -10,6 +10,15 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+- task: AzureCLI@2
+  displayName: 'az login'
+  inputs:
+    azureSubscription: 'devtest'
+    scriptType: 'bash'
+    scriptLocation: 'inlineScript'
+    inlineScript: 'az account show'
+    addSpnToEnvironment: true
+    workingDirectory: '$(System.DefaultWorkingDirectory)/deployment'
 - task: TerraformInstaller@1
   displayName: 'Installing Terraform'
   inputs:

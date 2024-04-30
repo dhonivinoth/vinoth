@@ -45,7 +45,7 @@ resource "azurerm_monitor_metric_alert" "cpu_alert" {
   
   criteria {
     metric_namespace = "Microsoft.Web/sites"
-    metric_name      = "CpuPercentage"
+    metric_name      = "CPU percentage"
     aggregation      = "Average"
     operator         = "GreaterThan"
     threshold        = 80

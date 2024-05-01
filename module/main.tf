@@ -50,7 +50,7 @@ resource "azurerm_monitor_metric_alert" "cpu_alert" {
   criteria {
     metric_namespace = "Microsoft.Web/sites"
     metric_name      = "CPUTime"
-    aggregation      = "Average"
+    aggregation      = "Total"
     operator         = "GreaterThan"
     threshold        = 80
   }
@@ -131,7 +131,7 @@ resource "azurerm_monitor_metric_alert" "ssl_certificate_alert" {
   description         = "Alert when SSL certificate is about to expire"
 
   criteria {
-    metric_namespace = "Microsoft.CertificateRegistration/certificateOrders"
+    metric_namespace = "Microsoft.Web/sites"
     metric_name      = "CertificateExpiration"
     aggregation      = "Maximum"  # Use maximum to check the latest expiration date
     operator         = "LessThan"  # Trigger alert if expiration date is less than threshold

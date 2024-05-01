@@ -126,22 +126,19 @@ resource "azurerm_monitor_metric_alert" "response_time_alert" {
 
 
 
-resource "azurerm_monitor_metric_alert" "ssl_certificate_alert" {
+resource "azurerm_monitor_metric_alert" "ssl_certificate_expiration" {
   name                = "ssl-certificate-expiration-alert"
   resource_group_name = data.azurerm_resource_group.apprg.name
   scopes              = [azurerm_application_insights.ssl_monitor.id]
-  description         = "Triggers an alert when the SSL certificate is about to expire"
-  severity            = 3
+  description         = "Triggers an alert when the SSL certificate is about to expire."
 
   criteria {
     metric_namespace = "Microsoft.Insights/components"
-    metric_name      = "NotAfter"
+    metric_name      = "SSLCertificateExpiry"
     aggregation      = "Total"
     operator         = "GreaterThan"
-    threshold        = "86400"
-    #time_aggregation = "PT1H"
+    threshold        = 30
   }
-
   action {
     action_group_id = azurerm_monitor_action_group.action.id
   }

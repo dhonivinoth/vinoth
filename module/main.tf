@@ -60,7 +60,8 @@ resource "azurerm_monitor_metric_alert" "cpu_alert" {
     aggregation      = "Total"
     operator         = "GreaterThan"
     threshold        = 90
-    window_size      = "PT15M"
+    time_aggregation = "PT1M"
+    time_window      = "PT15M"
   }
 
   action {
@@ -126,7 +127,8 @@ resource "azurerm_monitor_metric_alert" "ssl_certificate_alert" {
     aggregation      = "Total"
     operator         = "GreaterThan"
     threshold        = "86400"
-    window_size      = "PT1H"
+    time_aggregation = "PT1M"
+    time_window      = "PT15M"
   }
 
   action {

@@ -113,7 +113,7 @@ resource "azurerm_monitor_metric_alert" "response_time_alert" {
   
   criteria {
     metric_namespace = "Microsoft.Web/sites"
-    metric_name      = "ResponseTime"
+    metric_name      = "AverageResponseTime"
     aggregation      = "Average"
     operator         = "GreaterThan"
     threshold        = 500 # Example threshold in milliseconds
@@ -134,7 +134,7 @@ resource "azurerm_monitor_metric_alert" "ssl_certificate_alert" {
   severity            = 3
 
   criteria {
-    metric_namespace = "Microsoft.ApplicationInsights.SSL"
+    metric_namespace = "Microsoft.Insights/components"
     metric_name      = "NotAfter"
     aggregation      = "Total"
     operator         = "GreaterThan"

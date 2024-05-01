@@ -6,6 +6,15 @@
 trigger:
 - none
 
+variables:
+  AzureSubscription: 'devtest'
+  BackendServiceArm: 'Free Trial(c88aba11-9acc-421a-af0b-f3de2280694d)'
+  BackendAzureRmResourceGroupName: 'firstrg701'
+  BackendAzureRmStorageAccountName: 'firststg702'
+  BackendAzureRmContainerName: 'devopscontainer'
+  BackendAzureRmKey: 'alert.terraform.tfstate'
+  EnvironmentServiceNameAzureRM: 'Free Trial(c88aba11-9acc-421a-af0b-f3de2280694d)'
+
 pool:
   vmImage: ubuntu-latest
 
@@ -13,27 +22,29 @@ steps:
 - task: AzureCLI@2
   displayName: 'az login'
   inputs:
-    azureSubscription: 'devtest'
+    azureSubscription: '$(AzureSubscription)'
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: 'az account show'
     addSpnToEnvironment: true
     workingDirectory: '$(System.DefaultWorkingDirectory)/deployment'
+
 - task: TerraformInstaller@1
   displayName: 'Installing Terraform'
   inputs:
     terraformVersion: 'latest'
+
 - task: TerraformTaskV4@4
   displayName: 'terraform init'
   inputs:
     provider: 'azurerm'
     command: 'init'
     workingDirectory: '$(System.DefaultWorkingDirectory)/deployment'
-    backendServiceArm: 'Free Trial(c88aba11-9acc-421a-af0b-f3de2280694d)'
-    backendAzureRmResourceGroupName: 'firstrg701'
-    backendAzureRmStorageAccountName: 'firststg702'
-    backendAzureRmContainerName: 'devopscontainer'
-    backendAzureRmKey: 'alert.terraform.tfstate'
+    backendServiceArm: '$(BackendServiceArm)'
+    backendAzureRmResourceGroupName: '$(BackendAzureRmResourceGroupName)'
+    backendAzureRmStorageAccountName: '$(BackendAzureRmStorageAccountName)'
+    backendAzureRmContainerName: '$(BackendAzureRmContainerName)'
+    backendAzureRmKey: '$(BackendAzureRmKey)'
 
 - task: TerraformTaskV4@4
   displayName: 'terraform plan'
@@ -42,7 +53,8 @@ steps:
     command: 'plan'
     workingDirectory: '$(System.DefaultWorkingDirectory)/deployment'
     commandOptions: '-var-file="./webapp.tfvars"'
-    environmentServiceNameAzureRM: 'Free Trial(c88aba11-9acc-421a-af0b-f3de2280694d)'
+    environmentServiceNameAzureRM: '$(EnvironmentServiceNameAzureRM)'
+
 - task: TerraformTaskV4@4
   displayName: 'terraform apply'
   inputs:
@@ -50,4 +62,4 @@ steps:
     command: 'apply'
     workingDirectory: '$(System.DefaultWorkingDirectory)/deployment'
     commandOptions: '-auto-approve -var-file="./webapp.tfvars"'
-    environmentServiceNameAzureRM: 'Free Trial(c88aba11-9acc-421a-af0b-f3de2280694d)'
+    environmentServiceNameAzureRM: '$(EnvironmentServiceNameAzureRM)'

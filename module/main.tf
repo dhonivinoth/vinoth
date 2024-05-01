@@ -30,6 +30,13 @@ data "azurerm_windows_web_app" "windows_webapp" {
   web_app_name        = data.azurerm_windows_web_app.windows_webapp.name
 }*/
 
+resource "azurerm_application_insights" "ssl_monitor" {
+  name                = "ssl-monitor"
+  location            = data.azurerm_resource_group.apprg.location
+  resource_group_name = data.azurerm_resource_group.apprg.name
+  application_type    = "web"
+}
+
 resource "azurerm_monitor_action_group" "action" {
   name                = "DevActionGroup"
   resource_group_name = data.azurerm_resource_group.apprg.name
@@ -42,17 +49,18 @@ resource "azurerm_monitor_action_group" "action" {
 
 # CPU Usage Alert
 resource "azurerm_monitor_metric_alert" "cpu_alert" {
-  name                = "cpu-percentage-alert"
+  name                = "CpuUsageAlert"
   resource_group_name = data.azurerm_resource_group.apprg.name
   scopes              = [data.azurerm_windows_web_app.windows_webapp.id]
-  description         = "Alert when CPU exceeds 80%"
+  description         = "Triggers an alert when the CPU Time is above 90% for 15 minutes"
 
   criteria {
     metric_namespace = "Microsoft.Web/sites"
     metric_name      = "CPUTime"
     aggregation      = "Total"
     operator         = "GreaterThan"
-    threshold        = 80
+    threshold        = 90
+    time_aggregation = "PT15M"
   }
 
   action {
@@ -60,31 +68,12 @@ resource "azurerm_monitor_metric_alert" "cpu_alert" {
   }
 }
 
-/*resource "azurerm_monitor_metric_alert" "memory_alert" {
-  name                = "memory-percentage-alert"
-  resource_group_name = data.azurerm_resource_group.apprg.name
-  scopes              = [data.azurerm_windows_web_app.windows_webapp.id]
-  description         = "Alert when memory exceeds 90%"
-
-  criteria {
-    metric_namespace = "Microsoft.Web/sites"
-    metric_name      = "MemoryPercentage"
-    aggregation      = "Average"
-    operator         = "GreaterThan"
-    threshold        = 90
-  }
-
-  action {
-    action_group_id = azurerm_monitor_action_group.action.id
-  }
-}*/
-
 # Memory Usage Alert
 resource "azurerm_monitor_metric_alert" "memory_alert" {
   name                = "MemoryUsageAlert"
   resource_group_name = data.azurerm_resource_group.apprg.name
   scopes              = [data.azurerm_windows_web_app.windows_webapp.id]
-  description         = "Alert when memory usage exceeds 80%"
+  description         = "Triggers an alert when the MemoryWorkingSet is above 80 Bytes"
   target_resource_type = "Microsoft.Web/sites"
   severity            = 1
   
@@ -111,7 +100,7 @@ resource "azurerm_monitor_metric_alert" "response_time_alert" {
   
   criteria {
     metric_namespace = "Microsoft.Web/sites"
-    metric_name      = "AverageResponseTime"
+    metric_name      = "ResponseTime"
     aggregation      = "Average"
     operator         = "GreaterThan"
     threshold        = 500 # Example threshold in milliseconds
@@ -127,15 +116,17 @@ resource "azurerm_monitor_metric_alert" "response_time_alert" {
 resource "azurerm_monitor_metric_alert" "ssl_certificate_alert" {
   name                = "ssl-certificate-expiration-alert"
   resource_group_name = data.azurerm_resource_group.apprg.name
-  scopes              = [data.azurerm_windows_web_app.windows_webapp.id]
-  description         = "Alert when SSL certificate is about to expire"
+  scopes              = [azurerm_application_insights.ssl_monitor.id]
+  description         = "Triggers an alert when the SSL certificate is about to expire"
+  severity            = 3
 
   criteria {
-    metric_namespace = "Microsoft.Web/sites"
-    metric_name      = "CertificateExpiration"
-    aggregation      = "Maximum"  # Use maximum to check the latest expiration date
-    operator         = "LessThan"  # Trigger alert if expiration date is less than threshold
-    threshold        = 30  # Set the threshold (in days) before certificate expiration
+    metric_namespace = "Microsoft.ApplicationInsights.SSL"
+    metric_name      = "NotAfter"
+    aggregation      = "Total"
+    operator         = "GreaterThan"
+    threshold        = "86400"
+    time_aggregation = "PT1H"
   }
 
   action {

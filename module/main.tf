@@ -60,7 +60,12 @@ resource "azurerm_monitor_metric_alert" "cpu_alert" {
     aggregation      = "Total"
     operator         = "GreaterThan"
     threshold        = 90
-    time_aggregation = "PT15M"
+    #time_aggregation = "PT15M"
+    dimension {
+      name     = "Instance"
+      operator = "Include"
+      values   = ["var.app_service_name"]
+    }
   }
 
   action {
@@ -83,7 +88,15 @@ resource "azurerm_monitor_metric_alert" "memory_alert" {
     aggregation      = "Average"
     operator         = "GreaterThan"
     threshold        = 80
+
+    dimension {
+      name     = "Instance"
+      operator = "Include"
+      values   = ["var.app_service_name"]
+    }
   }
+
+
 
   action {
     action_group_id = azurerm_monitor_action_group.action.id
@@ -126,7 +139,7 @@ resource "azurerm_monitor_metric_alert" "ssl_certificate_alert" {
     aggregation      = "Total"
     operator         = "GreaterThan"
     threshold        = "86400"
-    time_aggregation = "PT1H"
+    #time_aggregation = "PT1H"
   }
 
   action {

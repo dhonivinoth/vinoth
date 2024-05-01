@@ -24,19 +24,6 @@ data "azurerm_windows_web_app" "windows_webapp" {
   resource_group_name     = data.azurerm_resource_group.apprg.name
 }
 
-/*data "azurerm_app_service_certificate" "ssl_certificate" {
-  name                = data.azurerm_windows_web_app.windows_webapp.https_only_binding.cert_name
-  resource_group_name = data.azurerm_windows_web_app.windows_webapp.resource_group_name
-  web_app_name        = data.azurerm_windows_web_app.windows_webapp.name
-}*/
-
-resource "azurerm_application_insights" "ssl_monitor" {
-  name                = "ssl-monitor"
-  location            = data.azurerm_resource_group.apprg.location
-  resource_group_name = data.azurerm_resource_group.apprg.name
-  application_type    = "web"
-}
-
 resource "azurerm_monitor_action_group" "action" {
   name                = "DevActionGroup"
   resource_group_name = data.azurerm_resource_group.apprg.name
@@ -126,7 +113,7 @@ resource "azurerm_monitor_metric_alert" "response_time_alert" {
 
 
 
-resource "azurerm_monitor_metric_alert" "ssl_certificate_expiration" {
+/*resource "azurerm_monitor_metric_alert" "ssl_certificate_expiration" {
   name                = "ssl-certificate-expiration-alert"
   resource_group_name = data.azurerm_resource_group.apprg.name
   scopes              = [azurerm_application_insights.ssl_monitor.id]
@@ -142,4 +129,4 @@ resource "azurerm_monitor_metric_alert" "ssl_certificate_expiration" {
   action {
     action_group_id = azurerm_monitor_action_group.action.id
   }
-}
+}*/

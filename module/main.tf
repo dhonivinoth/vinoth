@@ -28,9 +28,13 @@ resource "azurerm_monitor_action_group" "action" {
   name                = "DevActionGroup"
   resource_group_name = data.azurerm_resource_group.apprg.name
   short_name          = "DevActGroup"
-  email_receiver {
-    name                    = "EmailReceiver"
-    email_address           = "solutionsd999@gmail.com"
+  
+  dynamic "email_receiver" {
+    for_each                = var.team_members
+    content {
+      name                    = email_receiver.key
+      email_address           = email_receiver.value
+    }
   }
 }
 

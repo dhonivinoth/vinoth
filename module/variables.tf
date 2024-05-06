@@ -58,8 +58,8 @@ variable "app_service_location" {
   description = "The location of the app service being created."
 }
 
-/*variable "custom_metric_namespace" {
-  type        = string
+variable "team_members" {
+  type        = map(string)
   default     = null
-  description = "Namespace for custom metrics in Azure Monitor"
-}*/
+  description = "Send The Email Alert To Our Team Members"
+}

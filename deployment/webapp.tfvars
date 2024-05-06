@@ -8,4 +8,8 @@ APP_SERVICE_PLAN_RG_NAME   = "firstrg701" #Existing Resource Group
 APP_SERVICE_NAME           = "webapptest701"
 APP_SERVICE_RG_NAME        = "secondrg701"
 APP_SERVICE_LOCATION       = "East Us"     #default
-#CUSTOM_METRIC_NAMESPACE    = "MyUniqueNameForSSl"
+TEAM_MEMBERS               = {
+  "Ravi"             = "ravi@gmail.com"
+  "Siva"             = "siva@gmail.com"
+  "Vinoth"           = "vinoth@gmail.com"
+}

@@ -9,5 +9,5 @@ module "webapp" {
   app_service_name           = var.APP_SERVICE_NAME
   app_service_rg_name        = var.APP_SERVICE_RG_NAME
   app_service_location       = var.APP_SERVICE_LOCATION
-  #custom_metric_namespace    = var.CUSTOM_METRIC_NAMESPACE
+  team_members               = var.TEAM_MEMBERS
 }
